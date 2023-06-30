@@ -12,6 +12,16 @@
 #include "eloquent.h"
 #include "eloquent/networking/wifi/WifiScanner.h"
 
+#include <LiquidCrystal_I2C.h>
+
+// set the LCD number of columns and rows
+int lcdColumns = 18;
+int lcdRows = 2;
+
+// set LCD address, number of columns and rows
+// if you don't know your display address, run an I2C scanner sketch
+LiquidCrystal_I2C lcd(0x27, lcdColumns, lcdRows);
+
 
 class WiFiIndoorPositioning {
     public:
@@ -135,6 +145,10 @@ WiFiIndoorPositioning positioning;
 
 
 void setup() {
+    // initialize LCD
+    lcd.init();
+    // turn on LCD backlight                      
+    lcd.backlight();
     Serial.begin(115200);
     Serial.println("Instructions");
     Serial.println("\tMove around your house/space and read the detected room/zone on the Serial monitor");
@@ -142,29 +156,49 @@ void setup() {
 
 
 void loop() {
+    lcd.setCursor(0, 0);
     Serial.print("Current location: ");
     Serial.println(positioning.predictRoomName(wifiScanner));
 
     if (positioning.isIn("female washroom")) {
         Serial.println("You are in the female washroom");
+        lcd.print("You are in the");
+        lcd.setCursor(0, 1);
+        lcd.print("female washroom");
     }
     else if (positioning.isIn("male washroom")) {
         Serial.println("You are in the male washroom");
+        lcd.print("You are in the");
+        lcd.setCursor(0, 1);
+        lcd.print("male washroom");
     }
     else if (positioning.isIn("kitchen")) {
         Serial.println("You are in the kitchen");
+        lcd.print("You are in the");
+        lcd.setCursor(0, 1);
+        lcd.print("kitchen");
     }
     else if (positioning.isIn("hallway")) {
         Serial.println("You are in the hallway");
+        lcd.print("You are in the");
+        lcd.setCursor(0, 1);
+        lcd.print("hallway");
     }
     else if (positioning.isIn("meeting room")) {
         Serial.println("You are in the meeting room");
+        lcd.print("You are in the");
+        lcd.setCursor(0, 1);
+        lcd.print("meeting room");
     }
     else { // noor's room
         Serial.println("You are in Noor's room");
+        lcd.print("You are in");
+        lcd.setCursor(0, 1);
+        lcd.print("Noor's room");
     }
 
     // customize as per your needs
 
-    delay(5000);
+    delay(3000);
+    lcd.clear();
 }
